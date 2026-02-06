@@ -1,110 +1,131 @@
-# Organizzatore Turni
+# Sistema Assegnazione Turni - A&T 2WheelsPoliTO
 
-Script Python per organizzare automaticamente i turni per gli eventi in base alla disponibilità.
+Sistema automatico per l'assegnazione dei turni rispettando vincoli di disponibilità ed esperienza.
 
-## Requisiti
+## 📋 Caratteristiche
 
-Prima di fare una run del codice, è necessario installare le dependencies del file requirements.txt.
+- **Massimo turnover**: priorità a chi ha fatto meno turni
+- **Vincolo esperti**: almeno 1 esperto per turno
+- **Randomizzazione**: selezione casuale in caso di parità
+- **Statistiche dettagliate**: analisi delle assegnazioni
 
-- Python 3.6 o superiore
-- Libreria pandas
+## 🏗️ Struttura del progetto
 
-Ciò può essere fatto eseguendo a terminale il comando 
+```
+project/
+├── .gitignore                      # File da escludere da git
+├── README.md                       # Questo file, con spiegazione della struttura del codice
+├── config.py                       # Configurazioni standard
+├── models.py                       # Classi e strutture dati utilizzate
+├── data_loader.py                  # Caricamento dati da input (CSV)
+├── scheduler.py                    # Logica di assegnazione
+├── statistics.py                   # Calcolo statistiche dei turni
+├── main.py                         # Entry point
+└── disponibilità/
+    ├── esempio_disponibilita.csv   # File esempio (versionato)
+    └── A&T_Disp_2WheelsPoliTO.csv  # File reale (NON versionato)
+```
+
+## 🚀 Utilizzo
+
+### 1. Prepara il file CSV
+
+Il file CSV deve avere questa struttura: (DA RIVEDERE)
+
+```csv
+Matricola,Nome,Cognome,NEW 2026,Mercoledì Mattina,Mercoledì Pomeriggio,...
+123456,Mario,Rossi,0,1,1,0,1,1,0
+```
+
+**Colonne richieste:**
+- `Matricola`: identificativo univoco dello studente
+- `Nome`, `Cognome`: dati anagrafici
+- `NEW 2026`: 0 = esperto, 1 = nuovo
+- Disponibilità per ogni turno: 1 = disponibile, 0 = non disponibile
+
+### 2. Configura il percorso
+
+Modifica `config.py` se necessario:
+
+```python
+INPUT_CSV = "disponibilità/nome_file.csv"
+```
+
+### 3. Esegui il programma
+
+```bash
+python main.py
+```
+
+## 📊 Output
+
+Il programma stamperà:
+
+1. **Assegnazioni per turno**: chi è stato selezionato
+2. **Riepilogo**: divisione esperti/nuovi per turno
+3. **Statistiche**: distribuzione dei turni per persona
+4. **Verifica vincoli**: controllo rispetto delle regole
+
+## 🔧 Configurazione
+
+Per adattare le logiche di assegnazione, modifica i parametri nel modulo `config.py`:
+
+```python
+NUM_PERSONE_PER_TURNO = 4      # Persone per turno
+NUM_ESPERTI_MINIMI = 1          # Esperti minimi per turno
+```
+
+## 🔒 Privacy
+
+Dal momento che la repository è stata resa pubblica su GitHub, è necessario assicurarsi che dati sensibili non vengano comunicati all'esterno.
+A tal proposito, il file `.gitignore` è configurato per **non versionare** i CSV con dati reali:
+
+```gitignore
+disponibilità/*.csv              # Tutti i CSV
+!disponibilità/esempio_*.csv     # Eccetto gli esempi
+```
+
+Prima di committare, **verifica che i dati personali non siano tracciati**, controllando se siano stati salvati in staging pre-commit con il comando:
+
+```bash
+git status
+```
+
+## 📦 Dipendenze
+
+Tutte le dipendenze necessarie verranno scaricate dal comando
 
 ```bash
 uv sync
 ```
-oppure 
+che leggerà tutto il necessario dall'apposito file `pyproject.toml`.
 
-```bash
-uv add -r requirements.txt
+## 🛠️ Sviluppo
 
-```
+### Moduli principali
 
-## Configurazione
+- **config.py**: costanti e configurazioni utili
+- **models.py**: classi `Persona`, `Turno`, `AssegnazioneTurni` e relativi attributi
+- **data_loader.py**: funzioni per caricare e filtrare i dati CSV
+- **scheduler.py**: logica di selezione turni
+- **statistics.py**: analisi e visualizzazione risultati
+- **main.py**: coordinamento generale del progetto
 
-### 1. Preparazione del file CSV
+### Algoritmo di selezione
 
-Il file CSV deve contenere le seguenti colonne:
+1. Filtra persone disponibili per il turno
+2. Separa esperti e nuovi
+3. Calcola priorità (basata su numero turni già assegnati - più è alto il numero di turni, minore sarà la priorità)
+4. Seleziona un esperto (random se parità)
+5. Seleziona rimanenti (esperti + nuovi)
+6. Randomizza ordine finale
 
-- `Nome`: Nome della persona
-- `Cognome`: Cognome della persona
-- `Matricola`: Numero di matricola (identificativo univoco)
-- `Mail Poli`: Email politecnico
-- `Mail drive`: Email drive
-- `Reparto`: Reparto di appartenenza
-- `NEW 2026`: Indica se la persona è nuova (1) o esperta (0)
-- `Disponibilità` (da definire per generalizzazione)
+## 📝 Note
 
-**NB:** I campi vuoti nelle colonne di disponibilità vengono automaticamente considerati come 0 (non disponibile).
+- I dati nel file `esempio_disponibilita.csv` sono a titolo di esempio
+- Il tuo file reale va inserito nella cartella `disponibilità/`
+- Il file reale NON verrà versionato
 
-### 2. Parametri configurabili nello script
+## 📄 Licenza
 
-Aprendo il file `split_random.py` è possibile modificare i parametri nella sezione iniziale:
-
-```python
-# PARAMETRI CONFIGURABILI
-PERSONE_PER_TURNO = 3  # Numero di persone da assegnare per ogni turno
-FILE_CSV = "disponibilità.nome_file.csv"  # Preferibilmente in encoding utf-8
-SEED_RANDOM = None  
-```
-
-#### Parametri:
-
-- **PERSONE_PER_TURNO**: Quante persone assegnare per ogni turno
-- **FILE_CSV**: Path al file CSV in input da leggere (da caricare nella cartella `disponibilità`)
-- **SEED_RANDOM**: se si vuole utilizzare una suddivisione totalmente randomizzata e diversa a ogni esecuzione lasciare il seed impostato come `None`, altrimenti, per assicurare di ottenere risultati identici ma comunque randomizzati, cambiarlo a piacimento (ex: 36, 42,  etc.)
-
-## Utilizzo
-
-### Esecuzione
-
-1. Posiziona il file CSV nella stessa cartella apposita (da sistemare, magari mettere anche if-try pd.read_excel())
-2. Esegui lo script da terminale:
-
-```bash
-uv run python split_randomic.py
-```
-
-Lo script visualizzerà a schermo (da terminale) i risultati e mostrerà assegnazioni e statistiche. 
-
-## Regole di assegnazione
-
-Lo script rispetta automaticamente le seguenti regole:
-
-1. **Almeno un esperto per turno**: Ogni turno ha sempre almeno una persona con esperienza (NEW 2026 = 0)
-
-2. **Massimo turnover**: Priorità a chi ha fatto meno turni, per coinvolgere il maggior numero di persone possibile tra coloro che si sono resi disponibili.
-
-3. **Assegnazione randomica**: Tra persone con la stessa priorità, la scelta è casuale
-
-4. **Rispetto delle disponibilità**: Vengono assegnate solo persone che hanno dato la propria disponibilità (valore 1)
-
-## Risoluzione problemi
-
-### "File 'dipendenti.csv' non trovato"
-- Verifica che il file CSV sia nella cartella giusta: `disponibilità`
-- Oppure modifica il parametro `FILE_CSV` con il percorso completo
-
-### "Nessun esperto disponibile"
-- Almeno un esperto (NEW 2026 = 0) deve essere disponibile per ogni turno
-- Verifica le disponibilità nel CSV
-
-### "Solo X disponibili (servono Y)"
-- Non ci sono abbastanza persone disponibili per quel turno -> ridurre `PERSONE_PER_TURNO`
-
-## Personalizzazioni avanzate
-
-### Modificare i nomi dei turni
-DA RIVEDERE PER GENERALIZZARE
-
-Se i tuoi turni hanno nomi diversi, modifica la lista `COLONNE_TURNI` nello script:
-
-```python
-COLONNE_TURNI = ["MeMatt", "MePom", "GioMatt", "GioPomm", "VeMatt", "VePom"]
-```
-
-### Esportare i risultati in un file ?????
-
-
-ADELANTEEEEEEEEEEE
+Progetto per uso interno del Team 2WheelsPoliTO

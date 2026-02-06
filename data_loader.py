@@ -1,0 +1,69 @@
+"""
+Modulo per caricamento e gestione dati dal CSV
+"""
+import pandas as pd
+from typing import List
+from models import Persona
+import config
+
+
+def get_data_persone(filepath: str) -> List[Persona]:
+    """
+    Carica i dati persone dal CSV
+    
+    Args:
+        filepath: percorso del file CSV
+        
+    Returns:
+        Lista di oggetti Persona
+    """
+    df = pd.read_csv(filepath, sep=";", encoding="utf-8")
+    
+    persone = []
+    for idx, row in df.iterrows():
+        persona = Persona(
+            matricola=str(row[config.MATRICOLA]),
+            nome=row[config.NOME],
+            cognome=row[config.COGNOME],
+            is_esperto=(row[config.ESPERTO] == 0)  # 0 = esperto, 1 = nuovo
+        )
+        persone.append(persona)
+    
+    return persone
+
+
+def filtra_disponibili(
+    df: pd.DataFrame,
+    giorno: str,
+    fascia: str
+) -> pd.DataFrame:
+    """
+    Filtra il DataFrame per ottenere solo le persone disponibili
+    per un dato turno
+    
+    Args:
+        df: DataFrame completo
+        giorno: nome del giorno (es. "Mercoledì")
+        fascia: "Mattino" o "Pomeriggio"
+        
+    Returns:
+        DataFrame filtrato con solo i disponibili
+    """
+    disponibilità = config.COLONNE_DISPONIBILITA[giorno][fascia]
+    return df[df[disponibilità] == 1].copy()
+
+
+def separa_esperti(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Separa il DataFrame in nuovi ed esperti
+    
+    Args:
+        df: DataFrame da separare
+        
+    Returns:
+        (df_nuovi, df_esperti)
+    """
+    # NEW 2026: 1 = nuovo, 0 = esperto
+    nuovi = df[df[config.ESPERTO].astype(str) == "SI"].copy()
+    esperti = df[df[config.ESPERTO].astype(str) == "NO"].copy()
+    return nuovi, esperti

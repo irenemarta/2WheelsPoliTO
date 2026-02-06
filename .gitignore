@@ -1,0 +1,13 @@
+# File CSV con dati personali
+disponibilità/*.csv
+*.csv
+
+# File in output
+output/
+risultati/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
