@@ -9,16 +9,16 @@ INPUT_CSV = "disponibilità/A&T_Disp_2WheelsPoliTO.csv"
 NUM_PERSONE_PER_TURNO = 4
 NUM_ESPERTI_MINIMI = 1  # Minimo un esperto per turno
 
-# Definizione turni (giorno, fascia)
+# Definizione turni (giorno, fascia oraria)
+# IMPORTANTE: Le fasce devono corrispondere alle chiavi in COLONNE_DISPONIBILITA
 TURNI = [
-    ("Mercoledì", "Mattino"),
-    ("Mercoledì", "Pomeriggio"),
-    ("Giovedì", "Mattino"),
-    ("Giovedì", "Pomeriggio"),
-    ("Venerdì", "Mattino"),
-    ("Venerdì", "Pomeriggio"),
+    ("Mercoledì", "9:30 - 13"),
+    ("Mercoledì", "13 - 17"),
+    ("Giovedì", "9:30 - 13"),
+    ("Giovedì", "13 - 17"),
+    ("Venerdì", "9:30 - 13"),
+    ("Venerdì", "13 - 17"),
 ]
-
 # Colonne CSV
 MATRICOLA = "Matricola"
 NOME = "Nome"
@@ -26,17 +26,18 @@ COGNOME = "Cognome"
 ESPERTO = "NEW 2026"  # 1 = nuovo, 0 = esperto
 
 # Mapping giorni -> colonne nel CSV
-COLONNE_DISPONIBILITA = {
+# IMPORTANTE: Le chiavi devono corrispondere esattamente UGUALI a quelle in TURNI
+MAP_COLONNE_DISPONIBILITA = {
     "Mercoledì": {
-        "Mattino": "Mattino",
-        "Pomeriggio": "Pomeriggio"
+        "9:30 - 13": "MeMatt",      # Colonna CSV per mercoledì 9:30-13
+        "13 - 17": "MePom"          # Colonna CSV per mercoledì 13-17
     },
     "Giovedì": {
-        "Mattino": "Mattino",
-        "Pomeriggio": "Pomeriggio"
+        "9:30 - 13": "GioMatt",     # Colonna CSV per giovedì 9:30-13
+        "13 - 17": "GioPomm"        # Colonna CSV per giovedì 13-17
     },
     "Venerdì": {
-        "Mattino": "Mattino",
-        "Pomeriggio": "Pomeriggio"
+        "9:30 - 13": "VeMatt",      # Colonna CSV per venerdì 9:30-13
+        "13 - 17": "VePom"          # Colonna CSV per venerdì 13-17
     }
 }

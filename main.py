@@ -19,7 +19,7 @@ def main():
     # Carica dati
     print(f"\nCaricamento dati da: {config.INPUT_CSV}")
     try:
-        df = pd.read_csv(config.INPUT_CSV)
+        df = pd.read_csv(config.INPUT_CSV, sep=";", encoding="utf-8").fillna(0)
         print(f"Caricate {len(df)} persone")
     except FileNotFoundError:
         print(f"ERRORE: File {config.INPUT_CSV} non trovato!")

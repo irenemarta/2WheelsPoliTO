@@ -17,7 +17,19 @@ def get_data_persone(filepath: str) -> List[Persona]:
     Returns:
         Lista di oggetti Persona
     """
-    df = pd.read_csv(filepath, sep=";", encoding="utf-8")
+    df = pd.read_csv(filepath, sep=";", encoding="utf-8").fillna(0)
+
+    df['MeMatt'] = df['MeMatt'].rename('Mercoledì Mattino').astype(int)
+    df['MePom'] = df['MePom'].rename('Mercoledì Pomeriggio').astype(int)
+    df['GioMatt'] = df['GioMatt'].rename('Giovedì Mattino').astype(int)
+    df['GioPomm'] = df['GioPomm'].rename('Giovedì Pomeriggio').astype(int)
+    df['VeMatt'] = df['VeMatt'].rename('Venerdì Mattino').astype(int)
+    df['VePom'] = df['VePom'].rename('Venerdì Pomeriggio').astype(int)
+
+    if df['NEW 2026'] == 'SI':
+        df['NEW 2026'] = 1
+    else:
+        df['NEW 2026'] = 0
     
     persone = []
     for idx, row in df.iterrows():
@@ -25,7 +37,7 @@ def get_data_persone(filepath: str) -> List[Persona]:
             matricola=str(row[config.MATRICOLA]),
             nome=row[config.NOME],
             cognome=row[config.COGNOME],
-            is_esperto=(row[config.ESPERTO] == 0)  # 0 = esperto, 1 = nuovo
+            is_esperto=((row[config.ESPERTO] == 0).astype(bool))  # 0 = esperto, 1 = nuovo
         )
         persone.append(persona)
     
@@ -49,7 +61,7 @@ def filtra_disponibili(
     Returns:
         DataFrame filtrato con solo i disponibili
     """
-    disponibilità = config.COLONNE_DISPONIBILITA[giorno][fascia]
+    disponibilità = config.MAP_COLONNE_DISPONIBILITA[giorno][fascia]
     return df[df[disponibilità] == 1].copy()
 
 

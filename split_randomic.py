@@ -5,7 +5,7 @@ from collections import defaultdict
 
 # PARAMETRI CONFIGURABILI
 PERSONE_PER_TURNO = 4
-FILE_CSV = "A&T_Disp_2WheelsPoliTO.csv" 
+FILE_CSV = "disponibilità/A&T_Disp_2WheelsPoliTO.csv" 
 SEED_RANDOM = None # reproducibility seed
 
 # Nomi delle colonne dei turni (nomi csv)
@@ -80,14 +80,14 @@ def seleziona_turno(df_disponibili, persone_gia_assegnate, num_persone):
     esperti_sorted = esperti_sorted.sort_values('_priorita', ascending=False)
     
     # Selezionati almeno 1 esperto
-    selezionati = []
+    esperti_selezionati = []
     
     # Prendi 1 esperto con priorità (chi ha fatto meno turni)
     # Se ci sono esperti con stessa priorità, randomizza tra loro
     max_priorita_esperti = esperti_sorted['_priorita'].max()
     esperti_top = esperti_sorted[esperti_sorted['_priorita'] == max_priorita_esperti]
     esperto_scelto = esperti_top.sample(n=1).iloc[0]
-    selezionati.append(esperto_scelto.to_dict())
+    esperti_selezionati.append(esperto_scelto.to_dict())
     
     # Rimuovi l'esperto selezionato dalle liste
     esperti_sorted = esperti_sorted[esperti_sorted['Matricola'] != esperto_scelto['Matricola']]
@@ -129,11 +129,11 @@ def seleziona_turno(df_disponibili, persone_gia_assegnate, num_persone):
     # Converti pool_finale in DataFrame
     if pool_finale:
         df_pool = pd.DataFrame(pool_finale)
-        selezionati.extend(df_pool.to_dict('records'))
+        esperti_selezionati.extend(df_pool.to_dict('records'))
     
     # Converti selezionati in DataFrame
-    if selezionati:
-        df_selezionati = pd.DataFrame(selezionati)
+    if esperti_selezionati:
+        df_selezionati = pd.DataFrame(esperti_selezionati)
         # Randomizza l'ordine finale
         df_selezionati = df_selezionati.sample(frac=1).reset_index(drop=True)
         return df_selezionati, None
@@ -149,21 +149,21 @@ def organizza_turni(df, num_persone=PERSONE_PER_TURNO):
     print(f"ORGANIZZAZIONE TURNI ({num_persone} persone per turno)")
     print(f"{'='*70}\n")
     
-    for turno in COLONNE_TURNI:
-        disponibili = trova_disponibili(df, turno)
+    for idx, turno in MAP_COLONNE_TURNI.items():
+        disponibili = trova_disponibili(df, idx)
         
         print(f"\n--- {turno} ---")
         print(f"Disponibili: {len(disponibili)} persone")
         
         if len(disponibili) == 0:
-            print("⚠ Nessun disponibile per questo turno!")
+            print("ERRORE: Nessun disponibile per questo turno!")
             risultati[turno] = None
             continue
         
         selezionati, errore = seleziona_turno(disponibili, persone_gia_assegnate, num_persone)
         
         if errore:
-            print(f"⚠ {errore}")
+            print(f"{errore}")
             risultati[turno] = None
         else:
             # Aggiorna il conteggio
@@ -175,7 +175,7 @@ def organizza_turni(df, num_persone=PERSONE_PER_TURNO):
             for idx, persona in selezionati.iterrows():
                 ruolo = "NUOVO" if persona['NEW 2026'] == 1 else "ESPERTO"
                 turni_fatti = persone_gia_assegnate[persona['Matricola']]
-                print(f"  • {persona['Nome']} {persona['Cognome']} ({ruolo}) - Turni totali: {turni_fatti}")
+                print(f"{persona['Nome']} {persona['Cognome']} ({ruolo}) - Turni totali: {turni_fatti}")
     
     return risultati, persone_gia_assegnate
 

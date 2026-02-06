@@ -12,6 +12,7 @@ def seleziona_turno(
     df_disponibili: pd.DataFrame,
     persone_gia_assegnate: Dict[str, int],
     num_persone: int = config.NUM_PERSONE_PER_TURNO,
+    num_esperti: int = config.NUM_ESPERTI_MINIMI,
 ) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
     """
     Seleziona le persone per un turno rispettando i vincoli:
@@ -36,8 +37,8 @@ def seleziona_turno(
     if totale_disponibili < num_persone:
         return None, f"Solo {totale_disponibili} disponibili (servono {num_persone})"
 
-    if len(esperti) == 0:
-        return None, "Nessun esperto disponibile"
+    if len(esperti) < num_esperti:
+        return None, "Non ci sono abbastanza esperti disponibili"
 
     # Calcola priorità per tutti
     def calcola_priorita(matricola: str) -> int:
@@ -46,6 +47,7 @@ def seleziona_turno(
     # Aggiungi priorità
     nuovi = nuovi.copy()
     esperti = esperti.copy()
+    # per ogni matricola (sia per nuovi che esperti) aggiungere colonna priorità
     nuovi["_priorita"] = nuovi[config.MATRICOLA].apply(calcola_priorita)
     esperti["_priorita"] = esperti[config.MATRICOLA].apply(calcola_priorita)
     
@@ -53,27 +55,27 @@ def seleziona_turno(
     nuovi = nuovi.sort_values("_priorita", ascending=False)
     esperti = esperti.sort_values("_priorita", ascending=False)
 
-    # STEP 1: Seleziona 1 esperto (con randomizzazione se parità)
+    ### STEP 1: Seleziona 1 esperto (con randomizzazione se parità)
     max_priorita_esperti = esperti["_priorita"].max()
     esperti_top = esperti[esperti["_priorita"] == max_priorita_esperti]
-    esperto_scelto = esperti_top.sample(n=1).iloc[0]
+    esperto_scelto = esperti_top.sample(n=num_esperti).iloc[0]
     
     selezionati = [esperto_scelto.to_dict()]
-    
-    # Rimuovi l'esperto selezionato
+    # Rimuovi l'esperto selezionato (aggionramento della variabile)
     esperti = esperti[esperti[config.MATRICOLA] != esperto_scelto[config.MATRICOLA]]
 
-    # STEP 2: Seleziona le rimanenti persone
+    ### STEP 2: Seleziona le rimanenti persone
     rimanenti = pd.concat([esperti, nuovi]).drop(columns=["_priorita"])
+    # ricalcolo delle priorità
     rimanenti["_priorita"] = rimanenti[config.MATRICOLA].apply(calcola_priorita)
     
     posti_rimanenti = num_persone - 1
     
     if len(rimanenti) < posti_rimanenti:
-        return None, "Non abbastanza persone disponibili dopo aver scelto l'esperto"
+        return None, "Non ci sono abbastanza persone disponibili dopo aver scelto l'esperto"
 
     # Selezione con randomizzazione in caso di parità
-    pool_selezionati = []
+    pool_selezionati = [] # variabile di persone già scelte (esperte o nuove)
     priorita_corrente = rimanenti["_priorita"].max()
     
     while len(pool_selezionati) < posti_rimanenti and len(rimanenti) > 0:
@@ -81,13 +83,13 @@ def seleziona_turno(
         
         if len(candidati) + len(pool_selezionati) <= posti_rimanenti:
             # Tutti i candidati con questa priorità
-            pool_selezionati.extend(candidati.to_dict("records"))
+            pool_selezionati.extend(candidati.to_dict("records")) # allunga ola lista con i candidati
             rimanenti = rimanenti[rimanenti["_priorita"] < priorita_corrente]
         else:
             # Randomizzazione tra i candidati
             num_da_prendere = posti_rimanenti - len(pool_selezionati)
             scelti = candidati.sample(n=num_da_prendere)
-            pool_selezionati.extend(scelti.to_dict("records"))
+            pool_selezionati.extend(scelti.to_dict("records")) 
             break
         
         if len(rimanenti) > 0:
@@ -126,6 +128,7 @@ def assegna_turni(df: pd.DataFrame) -> List[Turno]:
     from data_loader import filtra_disponibili
     
     turni_assegnati = []
+    
     conteggio_turni: Dict[str, int] = {}
     
     for giorno, fascia in config.TURNI:
@@ -152,6 +155,8 @@ def assegna_turni(df: pd.DataFrame) -> List[Turno]:
         # Crea il turno
         turno = Turno(giorno=giorno, fascia=fascia, persone=persone)
         turni_assegnati.append(turno)
+
+        print(f'\nTurni assegnati:{turni_assegnati}\n')
         
         # Aggiorna conteggio
         for persona in persone:

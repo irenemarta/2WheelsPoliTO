@@ -113,7 +113,7 @@ def verifica_vincoli(turni: List[Turno]) -> bool:
     if tutto_ok:
         print("\nOK: Tutti i vincoli rispettati!")
     else:
-        print("\nERR>ORE: Alcuni vincoli NON rispettati!")
+        print("\nERRORE: Alcuni vincoli NON rispettati!")
     
     print("=" * 70)
     return tutto_ok
