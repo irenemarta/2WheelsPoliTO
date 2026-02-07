@@ -1,5 +1,5 @@
 """
-Modulo per caricamento e gestione dati dal CSV
+Modulo per caricamento e gestione dati di input
 """
 import pandas as pd
 from typing import List
@@ -9,8 +9,6 @@ import config
 
 def get_data_persone(filepath: str) -> List[Persona]:
     """
-    Carica i dati persone dal CSV
-    
     Args:
         filepath: percorso del file CSV
         
@@ -37,7 +35,7 @@ def get_data_persone(filepath: str) -> List[Persona]:
             matricola=str(row[config.MATRICOLA]),
             nome=row[config.NOME],
             cognome=row[config.COGNOME],
-            is_esperto=((row[config.ESPERTO] == 0).astype(bool))  # 0 = esperto, 1 = nuovo
+            new_entry=(row[config.ESPERTO])  # 0 = esperto, 1 = nuovo
         )
         persone.append(persona)
     
@@ -50,8 +48,7 @@ def filtra_disponibili(
     fascia: str
 ) -> pd.DataFrame:
     """
-    Filtra il DataFrame per ottenere solo le persone disponibili
-    per un dato turno
+    Filtra il DataFrame per ottenere solo le persone disponibili per un dato turno
     
     Args:
         df: DataFrame completo
@@ -67,8 +64,6 @@ def filtra_disponibili(
 
 def separa_esperti(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Separa il DataFrame in nuovi ed esperti
-    
     Args:
         df: DataFrame da separare
         

@@ -4,9 +4,10 @@ Configurazione del sistema di assegnazione turni
 
 # File paths
 INPUT_CSV = "disponibilità/A&T_Disp_2WheelsPoliTO.csv"
+EVENTO = 'A&T_2026'  # Nome evento per output
 
 # Parametri turni
-NUM_PERSONE_PER_TURNO = 4
+NUM_PERSONE_PER_TURNO = 7
 NUM_ESPERTI_MINIMI = 1  # Minimo un esperto per turno
 
 # Definizione turni (giorno, fascia oraria)

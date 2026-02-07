@@ -15,7 +15,7 @@ setup:
 make-turni:
     @echo "Generazione dei turni in corso..."
     {{python}} main.py
-    @echo "Turni generati con successo."
+    @echo "\nTurni generati con successo."
 
 # Pulizia dei file temporanei
 clean:

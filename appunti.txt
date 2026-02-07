@@ -1,4 +1,4 @@
-API GOOGLE spreadsheets
+API GOOGLE spreadsheets (per eventuale pescaggio input da google sheet)
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -20,3 +20,8 @@ df = pd.DataFrame(data)
 # Visualizza i dati o salvali in CSV
 print(df.head())
 df.to_csv('output.csv', index=False)
+
+
+TODO: 
+- TEST!!
+- Generalizzazione colonne disponibilità e turni (rivedere configurazione)
