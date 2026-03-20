@@ -3,12 +3,12 @@ disponibili/
 
 # File in output
 output/
-risultati/
+
+# Extra
+appunti/
 
 # Python
 __pycache__/
 *.pyc
 .venv/
 venv/
-
-appunti.txt
