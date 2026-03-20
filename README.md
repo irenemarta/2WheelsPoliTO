@@ -2,14 +2,14 @@
 
 Sistema automatico per l'assegnazione dei turni rispettando vincoli di disponibilità ed esperienza.
 
-## 📋 Caratteristiche
+## Caratteristiche
 
 - **Massimo turnover**: priorità a chi ha fatto meno turni
 - **Vincolo esperti**: almeno 1 esperto per turno
 - **Randomizzazione**: selezione casuale in caso di parità
 - **Statistiche dettagliate**: analisi delle assegnazioni
 
-## 🏗️ Struttura del progetto
+## Struttura del progetto
 
 ```
 project/
@@ -26,7 +26,7 @@ project/
     └── A&T_Disp_2WheelsPoliTO.csv  # File reale (NON versionato)
 ```
 
-## 🚀 Utilizzo
+## Utilizzo
 
 ### 1. Prepara il file CSV
 
@@ -52,12 +52,13 @@ INPUT_CSV = "disponibilità/nome_file.csv"
 ```
 
 ### 3. Esegui il programma
+Da terminale, digitare il seguente comando
 
 ```bash
-python main.py
+just make-turni
 ```
 
-## 📊 Output
+## Output
 
 Il programma stamperà:
 
@@ -66,7 +67,7 @@ Il programma stamperà:
 3. **Statistiche**: distribuzione dei turni per persona
 4. **Verifica vincoli**: controllo rispetto delle regole
 
-## 🔧 Configurazione
+## Configurazione
 
 Per adattare le logiche di assegnazione, modifica i parametri nel modulo `config.py`:
 
@@ -75,7 +76,7 @@ NUM_PERSONE_PER_TURNO = 4      # Persone per turno
 NUM_ESPERTI_MINIMI = 1          # Esperti minimi per turno
 ```
 
-## 🔒 Privacy
+## Privacy
 
 Dal momento che la repository è stata resa pubblica su GitHub, è necessario assicurarsi che dati sensibili non vengano comunicati all'esterno.
 A tal proposito, il file `.gitignore` è configurato per **non versionare** i CSV con dati reali:
@@ -85,13 +86,13 @@ disponibilità/*.csv              # Tutti i CSV
 !disponibilità/esempio_*.csv     # Eccetto gli esempi
 ```
 
-Prima di committare, **verifica che i dati personali non siano tracciati**, controllando se siano stati salvati in staging pre-commit con il comando:
+Prima di committare eventuali modifiche, **verifica che i dati personali non siano tracciati**, controllando se siano stati salvati in staging pre-commit con il comando:
 
 ```bash
 git status
 ```
 
-## 📦 Dipendenze
+## Dipendenze
 
 Tutte le dipendenze necessarie verranno scaricate dal comando
 
@@ -100,7 +101,7 @@ uv sync
 ```
 che leggerà tutto il necessario dall'apposito file `pyproject.toml`.
 
-## 🛠️ Sviluppo
+## Sviluppo
 
 ### Moduli principali
 
@@ -120,12 +121,12 @@ che leggerà tutto il necessario dall'apposito file `pyproject.toml`.
 5. Seleziona rimanenti (esperti + nuovi)
 6. Randomizza ordine finale
 
-## 📝 Note
+## Note
 
 - I dati nel file `esempio_disponibilita.csv` sono a titolo di esempio
 - Il tuo file reale va inserito nella cartella `disponibilità/`
 - Il file reale NON verrà versionato
 
-## 📄 Licenza
+## Licenza
 
 Progetto per uso interno del Team 2WheelsPoliTO

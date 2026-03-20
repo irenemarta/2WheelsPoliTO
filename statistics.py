@@ -86,8 +86,6 @@ def calcola_statistiche(turni: List[Turno]):
         esperti = turno.get_esperti()
         print(f"  {turno}: {len(esperti)} esperti")
 
-    print("\n" + "=" * 70)
-
 
 def verifica_vincoli(turni: List[Turno]) -> bool:
     """
@@ -215,7 +213,7 @@ def conta_esclusi_con_disponibilita(df: pd.DataFrame, turni_assegnati: List[Turn
         print(f"\nLista:")
         for persona in esclusi_ordinati:
             tipo = "Esperto" if persona['esperto'] else "Nuovo"
-            print(f"  - {persona['nome']:30} (s{persona['matricola']}) [{tipo:6}] - {persona['num_disponibilita']} disponibilità date")
+            print(f"  - {persona['nome']:30} ({persona['matricola']}) [{tipo:6}] - {persona['num_disponibilita']} disponibilità date")
         
         # Statistiche per tipo
         num_esperti = sum(1 for p in esclusi_con_disponibilita if p['esperto'])
