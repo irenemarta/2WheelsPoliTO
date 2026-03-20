@@ -15,7 +15,17 @@ def get_data_persone(filepath: str) -> List[Persona]:
     Returns:
         Lista di oggetti Persona
     """
-    df = pd.read_csv(filepath, sep=";", encoding="utf-8").fillna(0)
+    encodings = ["utf-8", "latin-1", "cp1252", "iso-8859-1"]
+    df = None
+    for enc in encodings:
+        try:
+            df = pd.read_csv(filepath, sep=";", encoding=enc).fillna(0)
+            break
+        except UnicodeDecodeError:
+            continue
+    
+    if df is None:
+        raise ValueError(f"Impossibile leggere il file CSV con gli encoding disponibili: {encodings}")
 
     df['MeMatt'] = df['MeMatt'].rename('Mercoledì Mattino').astype(int)
     df['MePom'] = df['MePom'].rename('Mercoledì Pomeriggio').astype(int)

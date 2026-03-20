@@ -124,7 +124,7 @@ che leggerà tutto il necessario dall'apposito file `pyproject.toml`.
 ## Note
 
 - I dati nel file `esempio_disponibilita.csv` sono a titolo di esempio
-- Il tuo file reale va inserito nella cartella `disponibilità/`
+- Il tuo file reale va inserito nella cartella `disponibili/`
 - Il file reale NON verrà versionato
 
 ## Licenza
