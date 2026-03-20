@@ -29,7 +29,7 @@ def main():
         df = pd.read_csv(config.INPUT_CSV, sep=";", encoding="utf-8").fillna(0)
         print(f"Caricate {len(df)} persone")
     except FileNotFoundError:
-        print(f"ERRORE: File {config.INPUT_CSV} non trovato!")
+        print(f"ERRORE: File {config.INPUT_CSV} non trovato")
         return
     except Exception as e:
         print(f"ERRORE durante il caricamento: {e}")

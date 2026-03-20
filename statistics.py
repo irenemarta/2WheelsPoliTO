@@ -78,7 +78,7 @@ def calcola_statistiche(turni: List[Turno]):
     for matricola, num_turni in persone_ordinate:
         nome, cognome, is_esperto = info_persone[matricola]
         tipo = "Esperto" if is_esperto else "Nuovo"
-        print(f"  {cognome} {nome} (s{matricola}) [{tipo}]: {num_turni} turni")
+        print(f"  {cognome} {nome} ({matricola}) [{tipo}]: {num_turni} turni")
 
     # Statistiche esperti
     print(f"\nStatistiche esperti per turno:")
