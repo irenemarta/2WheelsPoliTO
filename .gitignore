@@ -1,6 +1,5 @@
 # File CSV con dati personali
-disponibilità/*.csv
-*.csv
+disponibilità/
 
 # File in output
 output/
