@@ -59,7 +59,7 @@ def filtra_disponibili(
         DataFrame filtrato con solo i disponibili
     """
     disponibilità = config.MAP_COLONNE_DISPONIBILITA[giorno][fascia]
-    return df[df[disponibilità] == 1].copy()
+    return df[df[disponibili] == 1].copy()
 
 
 def separa_esperti(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:

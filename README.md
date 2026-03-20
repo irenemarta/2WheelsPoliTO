@@ -21,7 +21,7 @@ project/
 ├── scheduler.py                    # Logica di assegnazione
 ├── statistics.py                   # Calcolo statistiche dei turni
 ├── main.py                         # Entry point
-└── disponibilità/
+└── disponibili/
     ├── esempio_disponibilita.csv   # File esempio (versionato)
     └── A&T_Disp_2WheelsPoliTO.csv  # File reale (NON versionato)
 ```
@@ -48,7 +48,7 @@ Matricola,Nome,Cognome,NEW 2026,Mercoledì Mattina,Mercoledì Pomeriggio,...
 Modifica `config.py` se necessario:
 
 ```python
-INPUT_CSV = "disponibilità/nome_file.csv"
+INPUT_CSV = "disponibili/nome_file.csv"
 ```
 
 ### 3. Esegui il programma
@@ -82,8 +82,8 @@ Dal momento che la repository è stata resa pubblica su GitHub, è necessario as
 A tal proposito, il file `.gitignore` è configurato per **non versionare** i CSV con dati reali:
 
 ```gitignore
-disponibilità/*.csv              # Tutti i CSV
-!disponibilità/esempio_*.csv     # Eccetto gli esempi
+disponibili/*.csv              # Tutti i CSV
+!disponibili/esempio_*.csv     # Eccetto gli esempi
 ```
 
 Prima di committare eventuali modifiche, **verifica che i dati personali non siano tracciati**, controllando se siano stati salvati in staging pre-commit con il comando:

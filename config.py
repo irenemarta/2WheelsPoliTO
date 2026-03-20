@@ -3,7 +3,7 @@ Configurazione del sistema di assegnazione turni
 """
 
 # File paths
-INPUT_CSV = "disponibilità/A&T_Disp_2WheelsPoliTO.csv"
+INPUT_CSV = "disponibili/A&T_Disp_2WheelsPoliTO.csv"
 EVENTO = 'A&T_2026'  # Nome evento per output
 
 # Parametri turni
