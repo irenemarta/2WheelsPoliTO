@@ -67,6 +67,12 @@ Il programma stamperà:
 3. **Statistiche**: distribuzione dei turni per persona
 4. **Verifica vincoli**: controllo rispetto delle regole
 
+### Statistiche
+1. Distribuzione turni dettagliata
+2. Numero di turni assgenati per persona
+2. Verifica vincoli di assegnazione
+3. Riepilogo eventuali esclusi
+
 ## Configurazione
 
 Per adattare le logiche di assegnazione, modifica i parametri nel modulo `config.py`:
