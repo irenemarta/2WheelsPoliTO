@@ -2,15 +2,16 @@
 Modulo per calcolo e visualizzazione statistiche
 """
 
+import os, config
+import pandas as pd
+
 from typing import List, Dict
 from collections import Counter
 from models import Turno
-
-import pandas as pd
-import os
+from colorama import init, Fore
 from config import EVENTO
-import config
 
+init(autoreset=True)
 
 def stampa_riepilogo(turni: List[Turno]):
     """
@@ -18,13 +19,13 @@ def stampa_riepilogo(turni: List[Turno]):
         turni: Lista di turni assegnati
     """
     print("\n" + "=" * 70)
-    print("RIEPILOGO ASSEGNAZIONI")
+    print(Fore.CYAN + "RIEPILOGO ASSEGNAZIONI")
     print("=" * 70)
 
     for turno in turni:
         print(f"\n{turno}:")
-        esperti = turno.get_esperti()
-        nuovi = turno.get_nuovi()
+        esperti = turno._get_esperti()
+        nuovi = turno._get_nuovi()
 
         print(f"  Esperti ({len(esperti)}):")
         for persona in esperti:
@@ -56,7 +57,7 @@ def calcola_statistiche(turni: List[Turno]):
 
     # Statistiche generali
     print("\n" + "=" * 70)
-    print("STATISTICHE")
+    print(Fore.CYAN + "STATISTICHE")
     print("=" * 70)
 
     distribuzione = Counter(conteggio.values())
@@ -83,7 +84,7 @@ def calcola_statistiche(turni: List[Turno]):
     # Statistiche esperti
     print(f"\nStatistiche esperti per turno:")
     for turno in turni:
-        esperti = turno.get_esperti()
+        esperti = turno._get_esperti()
         print(f"  {turno}: {len(esperti)} esperti")
 
 
@@ -93,13 +94,13 @@ def verifica_vincoli(turni: List[Turno]) -> bool:
         turni: Lista di turni assegnati
     """
     print("\n" + "=" * 70)
-    print("VERIFICA VINCOLI")
+    print(Fore.CYAN + "VERIFICA VINCOLI")
     print("=" * 70)
 
     tutto_ok = True
 
     for turno in turni:
-        esperti = turno.get_esperti()
+        esperti = turno._get_esperti()
 
         # Verifica numero esperti
         if len(esperti) < 1:
@@ -109,9 +110,9 @@ def verifica_vincoli(turni: List[Turno]) -> bool:
             print(f"{turno}: {len(esperti)} esperti OK")
 
     if tutto_ok:
-        print("\nOK: Tutti i vincoli rispettati!")
+        print(Fore.GREEN + "\nOK: Tutti i vincoli rispettati!")
     else:
-        print("\nERRORE: Alcuni vincoli NON rispettati!")
+        print(Fore.RED + "\nERRORE: Alcuni vincoli NON rispettati!")
 
     print("=" * 70)
     return tutto_ok
@@ -126,15 +127,15 @@ def salvataggio_output(turni: List[Turno]) -> pd.DataFrame:
             {
                 "Giorno": turno.giorno,
                 "Fascia": turno.fascia,
-                "Assegnati": ", ".join(turno.get_dati_assegnati())
+                "Assegnati": ", ".join(turno._get_dati_assegnati())
             }
             for turno in turni
         ])
         df_turni.to_excel(os.path.join(output_directory, f"turni_{EVENTO}.xlsx"), index=False)
-        print(f"\nFile Excel finale salvato in {output_directory}")
+        print(Fore.GREEN + f"\nFile Excel finale salvato in {output_directory}")
 
     except Exception as e:
-        print(f'ERRORE nella creazione del file Excel: {e}')
+        print(Fore.RED + f'ERRORE nella creazione del file Excel: {e}')
 
     return df_turni
 
@@ -200,7 +201,7 @@ def conta_esclusi_con_disponibilita(df: pd.DataFrame, turni_assegnati: List[Turn
     
     # Stampa risultati
     print(f"\n{'='*70}")
-    print(f" PERSONE ESCLUSE CON DISPONIBILITÀ")
+    print(Fore.CYAN + f" PERSONE ESCLUSE CON DISPONIBILITÀ")
     print(f"{'='*70}")
     print(f"Persone con disponibilità ma 0 turni: {len(esclusi_con_disponibilita)}")
     
@@ -223,7 +224,7 @@ def conta_esclusi_con_disponibilita(df: pd.DataFrame, turni_assegnati: List[Turn
         print(f"  - Esperti esclusi: {num_esperti}")
         print(f"  - Nuovi esclusi: {num_nuovi}")
     else:
-        print("\n Nessuna persona esclusa! Tutti con disponibilità hanno ricevuto turni.")
+        print(Fore.GREEN + "\n Nessuna persona esclusa! Tutti con disponibilità hanno ricevuto turni.")
     
     return {
         'totale': len(esclusi_con_disponibilita),

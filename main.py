@@ -6,6 +6,7 @@ Entry point principale del programma
 
 import pandas as pd
 import config
+from colorama import Fore, init
 from data_loader import get_data_persone
 from scheduler import assegna_turni
 from statistics import (
@@ -16,6 +17,7 @@ from statistics import (
     conta_esclusi_con_disponibilita,
 )
 
+init(autoreset=True)
 
 def main():
     """Funzione principale"""
@@ -37,7 +39,7 @@ def main():
 
     # Assegna turni
     print(f"\nInizio assegnazione")
-    print(f"\nConfigurazione:")
+    print(Fore.CYAN + f"\nConfigurazione:")
     print(f"\t- Persone per turno: {config.NUM_PERSONE_PER_TURNO}")
     print(f"\t- Esperti minimi: {config.NUM_ESPERTI_MINIMI}")
     print(f"\t- Numero turni: {len(config.TURNI)}")

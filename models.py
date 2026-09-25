@@ -31,16 +31,16 @@ class Turno:
     def __str__(self):
         return f"{self.giorno} {self.fascia}"
 
-    def get_dati_assegnati(self) -> List[str]:
+    def _get_dati_assegnati(self) -> List[str]:
         "Ritorna tutte le persone assegnate al turno"
         nomi = [f"{persona.nome} {persona.cognome}" for persona in self.persone]
         return sorted(nomi, key=lambda x: x.split()[1]) # ordine alfabetico per cognome
 
-    def get_esperti(self) -> List[Persona]:
+    def _get_esperti(self) -> List[Persona]:
         """Ritorna solo gli esperti del turno"""
         return [persona for persona in self.persone if persona.new_entry == "NO"]
 
-    def get_nuovi(self) -> List[Persona]:
+    def _get_nuovi(self) -> List[Persona]:
         """Ritorna solo i nuovi del turno"""
         return [persona for persona in self.persone if persona.new_entry == "SI"]
 
