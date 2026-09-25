@@ -97,7 +97,7 @@ Salva il file dentro la cartella `disponibili/` (questa cartella NON VIENE VERSI
 Modifica `config.py` se necessario:
 
 ```python
-FILE_NAME = "nome_file.csv"
+NAME_FILE = "nome_file.csv"
 ```
 
 ### 3. Esegui il programma
@@ -134,7 +134,7 @@ Tutti i parametri che regolano la logica di assegnazione si trovano in `config.p
 
 | Variabile | Cosa fa | Quando modificarla |
 |---|---|---|
-| `FILE_NAME` | Percorso del file CSV con le disponibilità | Ogni evento, se il nome del file cambia |
+| `NAME_FILE` | Nome del file CSV con le disponibilità (dentro `disponibili/`) | Ogni evento, se il nome del file cambia |
 | `EVENTO` | Nome dell'evento, usato per nominare il file Excel di output (`turni_<EVENTO>.xlsx`) | Ogni evento |
 | `NUM_PERSONE_PER_TURNO` | Quante persone assegnare a ciascun turno | Se cambia il numero di postazioni/volontari necessari |
 | `NUM_ESPERTI_MINIMI` | Numero minimo di esperti richiesti per turno | Se cambia il vincolo di esperienza richiesto |
@@ -162,9 +162,11 @@ Prima di committare eventuali modifiche, **verifica che i dati personali non sia
 git status
 ```
 
+Come rete di sicurezza aggiuntiva, il progetto include anche un hook di pre-commit automatico che blocca il commit se rileva un CSV non ignorato (vedi sezione **Test automatici**).
+
 ## Dipendenze
 
-Tutte le dipendenze necessarie verranno scaricate dal comando
+Tutte le dipendenze necessarie (incluse quelle di sviluppo, come `pytest` e `pre-commit`) verranno scaricate dal comando
 
 ```bash
 uv sync
@@ -191,6 +193,24 @@ che leggerà tutto il necessario dall'apposito file `pyproject.toml` contenente 
 5. Seleziona rimanenti (esperti + nuovi)
 6. Randomizza ordine finale
 
+### Test automatici
+
+Il progetto usa [`pytest`](https://docs.pytest.org/) per i test automatici, concentrati soprattutto su `scheduler.py` (la parte con la logica più delicata).
+
+Per eseguire i test in locale:
+
+```bash
+uv run pytest -v
+```
+
+**Pre-commit hook**: prima di ogni commit viene verificato automaticamente che non vengano aggiunti CSV con dati reali (fuori da `esempio_*.csv`). Va installato una volta per persona, subito dopo il clone del progetto:
+
+```bash
+uv run pre-commit install
+```
+
+**CI automatica**: a ogni `push` o pull request, GitHub esegue automaticamente i test tramite GitHub Actions (`.github/workflows/test.yaml`). Puoi controllare l'esito nella tab **"Actions"** del repository su GitHub.
+
 ## Note
 
 - I dati nel file `esempio_disponibilita.csv` sono a titolo di esempio
@@ -199,4 +219,4 @@ che leggerà tutto il necessario dall'apposito file `pyproject.toml` contenente 
 
 ## Licenza
 
-Progetto per uso interno del Team 2WheelsPoliTO (vedi LICENSE.txt)
+Progetto per uso interno del Team 2WheelsPoliTO (vedi [LICENSE.txt](LICENSE.txt))

@@ -162,9 +162,11 @@ Before committing any changes, **verify that personal data is not being tracked*
 git status
 ```
 
+As an extra safety net, the project also includes an automatic pre-commit hook that blocks the commit if it detects an untracked-by-design CSV file (see the **Automated testing** section).
+
 ## Dependencies
 
-All required dependencies will be downloaded with the command
+All required dependencies (including development ones, such as `pytest` and `pre-commit`) will be downloaded with the command
 
 ```bash
 uv sync
@@ -191,6 +193,24 @@ which reads everything it needs from the `pyproject.toml` file, containing the l
 5. Select the remaining people (experts + new members)
 6. Randomize the final order
 
+### Automated testing
+
+The project uses [`pytest`](https://docs.pytest.org/) for automated testing, focused mainly on `scheduler.py` (the module with the most delicate logic).
+
+To run the tests locally:
+
+```bash
+uv run pytest -v
+```
+
+**Pre-commit hook**: before every commit, it's automatically verified that no CSV file with real data (other than `esempio_*.csv`) is being added. It needs to be installed once per person, right after cloning the project:
+
+```bash
+uv run pre-commit install
+```
+
+**Automated CI**: on every `push` or pull request, GitHub automatically runs the tests via GitHub Actions (`.github/workflows/test.yaml`). You can check the outcome in the **"Actions"** tab of the repository on GitHub.
+
 ## Notes
 
 - The data in the `esempio_disponibilita.csv` file is for illustration purposes only
@@ -199,4 +219,4 @@ which reads everything it needs from the `pyproject.toml` file, containing the l
 
 ## License
 
-Project for internal use by Team 2WheelsPoliTO (see LICENSE.txt)
+Project for internal use by Team 2WheelsPoliTO (see [LICENSE.txt](LICENSE.txt))

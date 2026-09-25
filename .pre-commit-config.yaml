@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: block-real-csv
+        name: Blocca CSV con dati reali
+        entry: bash -c 'git diff --cached --name-only --diff-filter=ACM | grep -E "\.csv$" | grep -v "esempio_" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
